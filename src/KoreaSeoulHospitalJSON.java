@@ -40,31 +40,30 @@ public class KoreaSeoulHospitalJSON {
 			id++;
 			for (int j = 0; j < guAndDong.size(); j++) {
 				if(guAndDong.get(j).keySet().toArray()[0].equals(guList.get(i))){
-					System.out.print("\t\t\t{\"id\":\""+id+"\",\n\t\t\t\"name\":\""+guAndDong.get(j).get(guList.get(i))+"\",");
+					System.out.print("\n\t\t\t{\"id\":\""+id+"\",\n\t\t\t\"name\":\""+guAndDong.get(j).get(guList.get(i))+"\",");
 					
 					id++;
-					System.out.println("\n\t\t\t\t\"children\":[{");
+					System.out.println("\n\t\t\t\t\"children\":[");
 					for (int l = 0; l < dongAndHospital.size(); l++) {
 						if(dongAndHospital.get(l).keySet().toArray()[0].equals(dongList.get(j))){
 							System.out.print("\t\t\t\t\t{\"id\":\""+id+"\",\n\t\t\t\t\t\"name\":\""+dongAndHospital.get(l).get(dongList.get(j))+"\"}");
 							id++;
-						}
-						if(l < dongAndHospital.size()-1){
-							if(dongAndHospital.get(l+1).keySet().toArray()[0].equals(dongList.get(j))){
-								System.out.print(",\n");
+							if(l+1 < dongAndHospital.size()){
+								if(dongAndHospital.get(l+1).keySet().toArray()[0].equals(dongList.get(j))){
+									System.out.println(",");
+								}
 							}
 						}
+						
 					}
-					System.out.println("\n\t\t\t\t]}");
-					if(j+1 < guAndDong.size()-1){
-						if(guAndDong.get(j+1).keySet().toArray()[0].equals(guList.get(i))){
-//							System.out.print(",\n");
-						}
+					System.out.print("\n\t\t\t\t]\n\t\t\t}");
+					if(guAndDong.get(j+1).keySet().toArray()[0].equals(guList.get(i))){
+						System.out.println(",");
 					}
 					
 				}
 			}
-			System.out.println("\n\t\t\t]\n\t\t\t}");
+			System.out.print("\t\t]\n\t}");
 			if(i < guList.size()-2){
 				System.out.println(",");
 			}
