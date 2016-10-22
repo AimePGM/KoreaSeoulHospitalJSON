@@ -11,6 +11,7 @@ public class KoreaSeoulHospitalJSON {
 	public static List<String> guList = new ArrayList<String>();
 	public static List<String> dongList = new ArrayList<String>();
 	public static List<Map> guAndDong = new ArrayList<Map>();
+	public static List<Map> dongAndHospital = new ArrayList<Map>();
 	public static void main(String[] args){
 		
 		reader();
@@ -29,25 +30,44 @@ public class KoreaSeoulHospitalJSON {
 			System.out.print("gu: "+guAndDong.get(i).keySet().toArray()[0]+" dong: "+guAndDong.get(i).get(guAndDong.get(i).keySet().toArray()[0]));
 			System.out.println();
 		}
-		
+		int id = 0;
 		System.out.println("\n\n\n");
-		System.out.println("{\"name\":\"서울시\",\n\t\"children\":[");
-		for (int i = 0; i < guList.size(); i++) {
+		System.out.println("{\"id\":\""+id+"\",\n\"name\":\"서울시\",\n\t\"children\":[");
+		id++;
+		for (int i = 0; i < guList.size()-1; i++) {
 			
-			System.out.println("\t\t{\"name\":\""+guList.get(i)+"\",\n\t\t\"children\":[");
-			
+			System.out.println("\t\t{\"id\":\""+id+"\",\n\t\t\"name\":\""+guList.get(i)+"\",\n\t\t\"children\":[");
+			id++;
 			for (int j = 0; j < guAndDong.size(); j++) {
 				if(guAndDong.get(j).keySet().toArray()[0].equals(guList.get(i))){
-					System.out.print("\t\t\t\t{\"name\":\""+guAndDong.get(j).get(guList.get(i))+"\"}");
-					if(j+1 < guAndDong.size()){
+					System.out.print("\t\t\t{\"id\":\""+id+"\",\n\t\t\t\"name\":\""+guAndDong.get(j).get(guList.get(i))+"\",");
+					
+					id++;
+					System.out.println("\n\t\t\t\t\"children\":[{");
+					for (int l = 0; l < dongAndHospital.size(); l++) {
+						if(dongAndHospital.get(l).keySet().toArray()[0].equals(dongList.get(j))){
+							System.out.print("\t\t\t\t\t{\"id\":\""+id+"\",\n\t\t\t\t\t\"name\":\""+dongAndHospital.get(l).get(dongList.get(j))+"\"}");
+							id++;
+						}
+						if(l < dongAndHospital.size()-1){
+							if(dongAndHospital.get(l+1).keySet().toArray()[0].equals(dongList.get(j))){
+								System.out.print(",\n");
+							}
+						}
+					}
+					System.out.println("\n\t\t\t\t]}");
+					if(j+1 < guAndDong.size()-1){
 						if(guAndDong.get(j+1).keySet().toArray()[0].equals(guList.get(i))){
-							System.out.print(",\n");
+//							System.out.print(",\n");
 						}
 					}
 					
 				}
 			}
-			System.out.println("\n\t\t]\n\t\t},");
+			System.out.println("\n\t\t\t]\n\t\t\t}");
+			if(i < guList.size()-2){
+				System.out.println(",");
+			}
 		
 		}
 		System.out.println("]}");
@@ -161,6 +181,32 @@ public class KoreaSeoulHospitalJSON {
 							if(!guAndDong.contains(temp)){
 								guAndDong.add(temp);
 							}
+							
+
+							boolean inProgressHospital = false;
+							int startHospitalIndex = 0;
+							int endHostpitalIndex = 0;
+							int startHospital = sCurrentLine.indexOf("\"ADD_KOR\":");
+							
+							if(startHospital > 0){
+								startHospital += 11;
+								startHospitalIndex = startHospital;
+								
+								for (int l = startHospital; l < sCurrentLine.length(); l++) {
+									if(sCurrentLine.charAt(l) == '\"'){
+										endHostpitalIndex = l;
+										break;
+									}
+								}
+								
+								String hospital = sCurrentLine.substring(startHospitalIndex, endHostpitalIndex);
+								
+								Map temp2 = new HashMap<>();
+								temp2.put(dong, hospital);
+								dongAndHospital.add(temp2);
+							}
+							
+							
 							
 							
 						}
